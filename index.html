@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XENON // Streetwear Store</title>
     
-    <!-- Font Awesome for Social and UI Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Embedded CSS System -->
     <style>
         /* --- Root Variables & Reset --- */
         :root {
@@ -130,6 +128,7 @@
             perspective: 1500px;
             width: 100%;
             height: 100vh;
+            position: relative;
         }
 
         .hero-flip-card {
@@ -137,10 +136,9 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+            transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
         }
 
-        /* Triggered via JS */
         .hero-flip-card.flipped {
             transform: rotateY(180deg);
         }
@@ -204,7 +202,6 @@
             line-height: 1.8;
             color: var(--chrome-silver);
             letter-spacing: 1px;
-            text-transform: none; /* Allows natural text reading */
             margin-bottom: 2.5rem;
         }
 
@@ -246,6 +243,38 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
+        /* --- Hexagonal Screen Transition Overlay --- */
+        .hex-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            display: grid;
+            /* Creates grid items matching the screen dimensions */
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            overflow: hidden;
+        }
+
+        .hex-cell {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            opacity: 0;
+            transform: scale(0.1);
+            /* Perfect CSS Clip-Path Hexagon geometry */
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        /* Activating animation configuration states */
+        .hex-container.animate .hex-cell {
+            opacity: 0.95;
+            transform: scale(1.1);
+        }
+
         /* --- Products Section --- */
         .products-section {
             max-width: 1300px;
@@ -283,7 +312,7 @@
         .product-image-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 125%; /* 4:5 Streetwear Aspect Ratio Look */
+            padding-top: 125%;
             overflow: hidden;
             background-color: #1a1a1a;
         }
@@ -586,12 +615,16 @@
                 width: 100%;
                 right: -100%;
             }
+            
+            .hex-container {
+                grid-template-columns: repeat(6, 1fr);
+                grid-template-rows: repeat(10, 1fr);
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="#" class="nav-logo">XENON</a>
@@ -614,11 +647,12 @@
         </div>
     </nav>
 
-    <!-- 3D Flip Hero Section Parent Container -->
     <div id="hero" class="hero-perspective">
+        
+        <div class="hex-container" id="hexContainer"></div>
+
         <div class="hero-flip-card" id="heroCard">
             
-            <!-- FRONT SIDE: Commercial storefront view -->
             <div class="hero-front">
                 <div class="hero-content">
                     <h1>RAW. ELEVATED. INDUSTRIAL.</h1>
@@ -630,7 +664,6 @@
                 </div>
             </div>
 
-            <!-- BACK SIDE: Underground Brand Narrative -->
             <div class="hero-back">
                 <div class="hero-content story-wrapper">
                     <h2>THE ARCHITECTURE OF XENON</h2>
@@ -646,23 +679,19 @@
         </div>
     </div>
 
-    <!-- Featured Products Section -->
     <main id="products" class="products-section">
         <h2 class="section-title">FEATURED DROPS</h2>
         <div class="product-grid" id="product-grid">
-            <!-- Dynamically loaded via Javascript -->
-        </div>
+            </div>
     </main>
 
-    <!-- Shopping Cart Slide-out Drawer -->
     <div id="cart-drawer" class="cart-drawer">
         <div class="cart-header">
             <h3>YOUR BAG</h3>
             <button id="cart-close" class="close-btn">&times;</button>
         </div>
         <div id="cart-items" class="cart-items-container">
-            <!-- Dynamically updated via Javascript -->
-        </div>
+            </div>
         <div class="cart-footer">
             <div class="cart-total">
                 <span>Total:</span>
@@ -673,7 +702,6 @@
     </div>
     <div id="cart-overlay" class="cart-overlay"></div>
 
-    <!-- Contact & Connect Section -->
     <section id="contact" class="contact-section">
         <div class="contact-container">
             <h2>JOIN THE UNDERGROUND</h2>
@@ -692,75 +720,23 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <p>&copy; 2026 XENON STUDIO. ALL RIGHTS RESERVED.</p>
     </footer>
 
-    <!-- JavaScript Functional Architecture -->
     <script>
-        // --- Expanded Inventory Database ---
+        // --- Store Inventory Database ---
         const products = [
-            {
-                id: 1,
-                name: "OVERSIZED SEAM GRAPHIC HOODIE",
-                price: 85.00,
-                image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=600"
-            },
-            {
-                id: 2,
-                name: "BOX FIT OVERSIZED T-SHIRT",
-                price: 45.00,
-                image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=600"
-            },
-            {
-                id: 3,
-                name: "XENON CARGO PANTS // SILV",
-                price: 110.00,
-                image: "https://images.unsplash.com/photo-1517423568366-8b83523034fd?q=80&w=600"
-            },
-            {
-                id: 4,
-                name: "DISTRESSED DENIM JACKET",
-                price: 140.00,
-                image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?q=80&w=600"
-            },
-            {
-                id: 5,
-                name: "HEAVY KNIT COTTON SWEATER",
-                price: 95.00,
-                image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=600"
-            },
-            {
-                id: 6,
-                name: "MOTO-NYLON TRACKPANTS",
-                price: 75.00,
-                image: "https://images.unsplash.com/photo-1551854838-212c50b4c184?q=80&w=600"
-            },
-            {
-                id: 7,
-                name: "RAW EDGE LONG SLEEVE TEE",
-                price: 55.00,
-                image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?q=80&w=600"
-            },
-            {
-                id: 8,
-                name: "RIBBED INDUSTRIAL BEANIE",
-                price: 28.00,
-                image: "https://images.unsplash.com/photo-1576871337622-98d48d4aa53e?q=80&w=600"
-            },
-            {
-                id: 9,
-                name: "METALLIC LOGO DISTRESSED HAT",
-                price: 32.00,
-                image: "https://images.unsplash.com/photo-1534215754734-18e55d13ce35?q=80&w=600"
-            },
-            {
-                id: 10,
-                name: "COMPRESSION PACK RIB SOCKS",
-                price: 18.00,
-                image: "https://images.unsplash.com/photo-1582966772680-860e372bb558?q=80&w=600"
-            }
+            { id: 1, name: "OVERSIZED SEAM GRAPHIC HOODIE", price: 85.00, image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=600" },
+            { id: 2, name: "BOX FIT OVERSIZED T-SHIRT", price: 45.00, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=600" },
+            { id: 3, name: "XENON CARGO PANTS // SILV", price: 110.00, image: "https://images.unsplash.com/photo-1517423568366-8b83523034fd?q=80&w=600" },
+            { id: 4, name: "DISTRESSED DENIM JACKET", price: 140.00, image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?q=80&w=600" },
+            { id: 5, name: "HEAVY KNIT COTTON SWEATER", price: 95.00, image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=600" },
+            { id: 6, name: "MOTO-NYLON TRACKPANTS", price: 75.00, image: "https://images.unsplash.com/photo-1551854838-212c50b4c184?q=80&w=600" },
+            { id: 7, name: "RAW EDGE LONG SLEEVE TEE", price: 55.00, image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?q=80&w=600" },
+            { id: 8, name: "RIBBED INDUSTRIAL BEANIE", price: 28.00, image: "https://images.unsplash.com/photo-1576871337622-98d48d4aa53e?q=80&w=600" },
+            { id: 9, name: "METALLIC LOGO DISTRESSED HAT", price: 32.00, image: "https://images.unsplash.com/photo-1534215754734-18e55d13ce35?q=80&w=600" },
+            { id: 10, name: "COMPRESSION PACK RIB SOCKS", price: 18.00, image: "https://images.unsplash.com/photo-1582966772680-860e372bb558?q=80&w=600" }
         ];
 
         // --- State Management ---
@@ -778,14 +754,47 @@
         const mobileMenuBtn = document.getElementById('mobile-menu');
         const navMenu = document.querySelector('.nav-menu');
         
-        // Hero Flip Elements
+        // Hero Elements
         const heroCard = document.getElementById('heroCard');
         const flipToBackBtn = document.getElementById('flipToBack');
         const flipToFrontBtn = document.getElementById('flipToFront');
+        const hexContainer = document.getElementById('hexContainer');
+
+        // --- Setup Hexagonal Matrix Grid Items ---
+        const totalHexagons = 60; // 10 columns x 6 rows configured in layout
+        for (let i = 0; i < totalHexagons; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('hex-cell');
+            
+            // Apply randomized mathematical staggering delays to simulate an unstable fading wave
+            const staggeredDelay = Math.random() * 0.4; 
+            cell.style.transitionDelay = `${staggeredDelay}s`;
+            
+            hexContainer.appendChild(cell);
+        }
+
+        // --- Hexagonal Transition Orchestration ---
+        function executeHexFlipTransition(targetAction) {
+            // Step 1: Fade and scale hexagons into view across grid architecture
+            hexContainer.classList.add('animate');
+
+            // Step 2: Midpoint calculation. Flip the structural elements while screens are occluded
+            setTimeout(() => {
+                if (targetAction === 'flipBack') {
+                    heroCard.classList.add('flipped');
+                } else if (targetAction === 'flipFront') {
+                    heroCard.classList.remove('flipped');
+                }
+            }, 450);
+
+            // Step 3: De-escalate and dissolve grid positions cleanly
+            setTimeout(() => {
+                hexContainer.classList.remove('animate');
+            }, 900);
+        }
 
         // --- Core Application Methods ---
 
-        // Display store inventory items dynamically
         function renderProducts() {
             if (!productGrid) return;
             productGrid.innerHTML = products.map(product => `
@@ -802,13 +811,11 @@
             `).join('');
         }
 
-        // Toggle side menu cart interface drawer
         function toggleCart() {
             cartDrawer.classList.toggle('active');
             cartOverlay.classList.toggle('active');
         }
 
-        // Add matching items to global cart structure
         function addToCart(productId) {
             const product = products.find(p => p.id === productId);
             const existingItem = cart.find(item => item.id === productId);
@@ -824,13 +831,11 @@
             cartOverlay.classList.add('active');
         }
 
-        // Remove designated unique item from layout
         function removeFromCart(productId) {
             cart = cart.filter(item => item.id !== productId);
             updateCart();
         }
 
-        // Keep local storage states and totals uniformly synced
         function updateCart() {
             localStorage.setItem('xenon_cart', JSON.stringify(cart));
             renderCartItems();
@@ -842,7 +847,6 @@
             cartTotalPrice.textContent = `$${totalPrice.toFixed(2)}`;
         }
 
-        // Write live localized data to DOM target elements
         function renderCartItems() {
             if (cart.length === 0) {
                 cartItemsContainer.innerHTML = `<p style="text-align:center; color:#555; margin-top:2rem;">Your bag is empty.</p>`;
@@ -864,13 +868,11 @@
             `).join('');
         }
 
-        // Handle structural responsiveness mobile viewport conversions
         function toggleMobileMenu() {
             mobileMenuBtn.classList.toggle('active');
             navMenu.classList.toggle('active');
         }
 
-        // Collapse mobile responsive links directly after click routines
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => {
                 mobileMenuBtn.classList.remove('active');
@@ -884,16 +886,10 @@
         cartOverlay.addEventListener('click', toggleCart);
         mobileMenuBtn.addEventListener('click', toggleMobileMenu);
 
-        // Hero 3D Card Flipping Event Listeners
-        flipToBackBtn.addEventListener('click', () => {
-            heroCard.classList.add('flipped');
-        });
+        // Intercept standard flip behaviors to fire custom Hex dynamic workflow
+        flipToBackBtn.addEventListener('click', () => executeHexFlipTransition('flipBack'));
+        flipToFrontBtn.addEventListener('click', () => executeHexFlipTransition('flipFront'));
 
-        flipToFrontBtn.addEventListener('click', () => {
-            heroCard.classList.remove('flipped');
-        });
-
-        // Run application on configuration load complete
         document.addEventListener('DOMContentLoaded', () => {
             renderProducts();
             updateCart();
