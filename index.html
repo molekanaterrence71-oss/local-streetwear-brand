@@ -136,9 +136,9 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            /* Slowed transform to 1.5s so it flips majestically in the background */
-            transition: transform 1.5s cubic-bezier(0.76, 0, 0.24, 1), 
-                        opacity 0.4s ease-in-out;
+            /* Flip duration compressed to a lightning-fast 0.5s (2s faster than the total 2.5s window) */
+            transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1), 
+                        opacity 0.3s ease-in-out;
         }
 
         .hero-flip-card.flipped {
@@ -265,7 +265,6 @@
             opacity: 0;
             transform: scale(0.0) rotate(-60deg);
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            /* Made cell scaling slightly slower for a weightier travel animation */
             transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
                         opacity 0.8s ease;
             background-color: #000000;
@@ -763,7 +762,6 @@
                 const cell = document.createElement('div');
                 cell.classList.add('hex-cell');
                 
-                // Increased the delay factor to 0.07s to stretch wave roll-out time
                 const diagonalIndex = r + c; 
                 cell.style.transitionDelay = `${diagonalIndex * 0.07}s`;
                 
@@ -771,31 +769,33 @@
             }
         }
 
-        // --- Calibrated 5-Second Transition Timeline ---
+        // --- Calibrated Asynchronous Timeline ---
         function executeHexFlipTransition(targetAction) {
-            // 1. Roll out the black hexagon screen wave
+            // Total timeline window is ~5 seconds.
+            // 1. Matrix wave rolls across layout
             hexContainer.classList.add('animate');
 
-            // 2. Fade out original card layout smoothly before 3D movement begins
+            // 2. Hide old layout instantly when the screen is dark
             setTimeout(() => {
                 heroCard.classList.add('hide-during-flip');
             }, 1200);
 
-            // 3. Perform majestic 1.5s 3D background flip in complete hidden darkness
+            // 3. Lightning-fast 0.5s background flip executed inside hidden canvas
+            // Finishes 2 full seconds before the matrix peels away
             setTimeout(() => {
                 if (targetAction === 'flipBack') {
                     heroCard.classList.add('flipped');
                 } else if (targetAction === 'flipFront') {
                     heroCard.classList.remove('flipped');
                 }
-            }, 2000); 
+            }, 1700); 
 
-            // 4. Retract the matrix wall (extended hold ensures full rotation completion)
+            // 4. Matrix begins peeling off the viewport after a solid pause
             setTimeout(() => {
                 hexContainer.classList.remove('animate');
             }, 4200);
 
-            // 5. Pop the new card contents smoothly back into view as hexagons clear away
+            // 5. Fade new contents smoothly into view
             setTimeout(() => {
                 heroCard.classList.remove('hide-during-flip');
             }, 5000);
@@ -877,7 +877,7 @@
             `).join('');
         }
 
-        // --- Dynamic Event Delegation Setup ---
+        // --- Event Handlers ---
         if (productGrid) {
             productGrid.addEventListener('click', (e) => {
                 if (e.target.classList.contains('btn-add-cart')) {
