@@ -136,12 +136,16 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            /* Lengthened flip timing slightly to pair beautifully with a slower grid wipe */
             transition: transform 1.2s cubic-bezier(0.76, 0, 0.24, 1);
         }
 
         .hero-flip-card.flipped {
             transform: rotateY(180deg);
+        }
+
+        /* JavaScript controls this to completely hide the flip sequence mid-wipe */
+        .hero-flip-card.hide-during-flip {
+            visibility: hidden !important;
         }
 
         .hero-front, .hero-back {
@@ -241,7 +245,7 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        /* --- Slower Left-To-Right Stark Stark B&W Hex Matrix Overlay --- */
+        /* --- Slower Left-To-Right Small Hex Matrix Overlay --- */
         .hex-container {
             position: absolute;
             top: 0;
@@ -251,36 +255,31 @@
             z-index: 10;
             pointer-events: none;
             display: grid;
-            grid-template-columns: repeat(12, 1fr); /* Slightly denser matrix layout grid columns */
-            grid-template-rows: repeat(6, 1fr);
+            grid-template-columns: repeat(24, 1fr); /* Denser grid structure for smaller hexagons */
+            grid-template-rows: repeat(12, 1fr);
             overflow: hidden;
         }
 
         .hex-cell {
             opacity: 0;
-            transform: scale(0.0) rotate(-45deg);
+            transform: scale(0.0) rotate(-60deg);
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            /* Transition parameters optimized for a heavy, slow, sliding wipe effect */
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), 
-                        opacity 0.7s ease, 
-                        background-color 0.4s ease;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+                        opacity 0.6s ease;
         }
 
-        /* Alternate cell coloring scheme between pure industrial stark white and deep onyx black */
+        /* Alternating White and Black theme styling */
         .hex-cell:nth-child(odd) {
             background-color: #ffffff;
-            border: 1px solid #e5e5e5;
         }
 
         .hex-cell:nth-child(even) {
             background-color: #000000;
-            border: 1px solid #1a1a1a;
         }
 
-        /* Activating animation configuration grid layout classes */
         .hex-container.animate .hex-cell {
             opacity: 1;
-            transform: scale(1.15) rotate(0deg);
+            transform: scale(1.25) rotate(0deg);
         }
 
         /* --- Products Section --- */
@@ -620,8 +619,8 @@
             }
             
             .hex-container {
-                grid-template-columns: repeat(6, 1fr); /* Adapt spatial matrix for smaller mobile viewports */
-                grid-template-rows: repeat(10, 1fr);
+                grid-template-columns: repeat(12, 1fr);
+                grid-template-rows: repeat(24, 1fr);
             }
         }
     </style>
@@ -742,10 +741,8 @@
             { id: 10, name: "COMPRESSION PACK RIB SOCKS", price: 18.00, image: "https://images.unsplash.com/photo-1582966772680-860e372bb558?q=80&w=600" }
         ];
 
-        // --- State Management ---
         let cart = JSON.parse(localStorage.getItem('xenon_cart')) || [];
 
-        // --- Cache DOM Elements ---
         const productGrid = document.getElementById('product-grid');
         const cartToggle = document.getElementById('cart-toggle');
         const cartClose = document.getElementById('cart-close');
@@ -757,54 +754,55 @@
         const mobileMenuBtn = document.getElementById('mobile-menu');
         const navMenu = document.querySelector('.nav-menu');
         
-        // Hero Card & Dynamic Hex Matrix Properties
         const heroCard = document.getElementById('heroCard');
         const flipToBackBtn = document.getElementById('flipToBack');
         const flipToFrontBtn = document.getElementById('flipToFront');
         const hexContainer = document.getElementById('hexContainer');
 
-        // Define matrix structural boundaries
-        const cols = 12;
-        const rows = 6;
-        const totalHexagons = cols * rows;
+        // Increased grid size parameters for smaller hexagons
+        const cols = 24;
+        const rows = 12;
 
-        // Generate matrix array positions 
         for (let r = 0; r < rows; r++) {
             for (let c = 0; c < cols; c++) {
                 const cell = document.createElement('div');
                 cell.classList.add('hex-cell');
                 
-                // Left-To-Right Directional Processing Engine:
-                // Delay maps directly onto column position variable index (c)
-                const baseDelay = c * 0.12; 
+                // Fine-tuned sequential delay for small item structures moving left-to-right
+                const baseDelay = c * 0.06; 
                 cell.style.transitionDelay = `${baseDelay}s`;
                 
                 hexContainer.appendChild(cell);
             }
         }
 
-        // --- Hexagonal Left-To-Right Transition Orchestrator ---
+        // --- Hidden Rotation & Left-To-Right Transition Orchestrator ---
         function executeHexFlipTransition(targetAction) {
             hexContainer.classList.add('animate');
 
-            // Midpoint card inversion schedule calculation matching column limits
-            // Maximum calculated column entry point delay path calculation is (11 columns * 0.12s) = 1.32 seconds.
-            // 0.85s represents the structural sweet spot for global coverage inversion
+            // 1. Hide visual flip artifact generation exactly when the wipe achieves maximum coverage
             setTimeout(() => {
+                heroCard.classList.add('hide-during-flip');
+                
                 if (targetAction === 'flipBack') {
                     heroCard.classList.add('flipped');
                 } else if (targetAction === 'flipFront') {
                     heroCard.classList.remove('flipped');
                 }
-            }, 850);
+            }, 800);
 
-            // Strip animations to smoothly reveal target layout faces once full wipe cycle ends
+            // 2. Safely restore structural element visibility after inversion processing ends
+            setTimeout(() => {
+                heroCard.classList.remove('hide-during-flip');
+            }, 1200);
+
+            // 3. Clear hexagonal layout animation statuses
             setTimeout(() => {
                 hexContainer.classList.remove('animate');
-            }, 2100);
+            }, 2300);
         }
 
-        // --- Core E-Commerce Methods ---
+        // --- E-Commerce Functionality ---
 
         function renderProducts() {
             if (!productGrid) return;
@@ -891,7 +889,6 @@
             });
         });
 
-        // --- Runtime Event Framework ---
         cartToggle.addEventListener('click', toggleCart);
         cartClose.addEventListener('click', toggleCart);
         cartOverlay.addEventListener('click', toggleCart);
