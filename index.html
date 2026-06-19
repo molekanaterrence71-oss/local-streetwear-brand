@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XENON // Streetwear Store</title>
     
+    <!-- Font Awesome for Social and UI Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Embedded CSS System -->
     <style>
         /* --- Root Variables & Reset --- */
         :root {
@@ -123,16 +125,50 @@
             transition: 0.3s ease;
         }
 
-        /* --- Hero Section --- */
-        .hero-section {
+        /* --- 3D Flipping Hero Container --- */
+        .hero-perspective {
+            perspective: 1500px;
+            width: 100%;
             height: 100vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), 
-                        url('https://images.unsplash.com/photo-1509281373149-e957c6296406?q=80&w=1920') no-repeat center center/cover;
+        }
+
+        .hero-flip-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        /* Triggered via JS */
+        .hero-flip-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .hero-front, .hero-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 0 1rem;
+            padding: 0 1.5rem;
+        }
+
+        /* Front Face (Original Hero) */
+        .hero-front {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), 
+                        url('https://images.unsplash.com/photo-1509281373149-e957c6296406?q=80&w=1920') no-repeat center center/cover;
+        }
+
+        /* Back Face (Brand Story) */
+        .hero-back {
+            background: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.95)), 
+                        url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1920') no-repeat center center/cover;
+            transform: rotateY(180deg);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .hero-content h1 {
@@ -151,9 +187,38 @@
             text-transform: uppercase;
         }
 
-        .btn-primary {
+        .story-wrapper {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .story-wrapper h2 {
+            font-size: 2.5rem;
+            letter-spacing: 4px;
+            margin-bottom: 1.5rem;
+            font-weight: 900;
+        }
+
+        .story-wrapper p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--chrome-silver);
+            letter-spacing: 1px;
+            text-transform: none; /* Allows natural text reading */
+            margin-bottom: 2.5rem;
+        }
+
+        /* Buttons Setup */
+        .hero-btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary {
             display: inline-block;
-            padding: 1rem 2.5rem;
+            padding: 1rem 2rem;
             border: 1px solid var(--text-white);
             color: var(--text-white);
             text-decoration: none;
@@ -162,11 +227,23 @@
             text-transform: uppercase;
             transition: all 0.3s ease;
             background: transparent;
+            cursor: pointer;
         }
 
         .btn-primary:hover {
             background-color: var(--text-white);
             color: var(--bg-black);
+        }
+
+        .btn-secondary {
+            border-color: var(--silver);
+            color: var(--silver);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-white);
+            color: var(--text-white);
+            background: rgba(255, 255, 255, 0.05);
         }
 
         /* --- Products Section --- */
@@ -500,6 +577,10 @@
             .hero-content h1 {
                 font-size: 2.2rem;
             }
+            
+            .story-wrapper h2 {
+                font-size: 1.8rem;
+            }
 
             .cart-drawer {
                 width: 100%;
@@ -510,6 +591,7 @@
 </head>
 <body>
 
+    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="#" class="nav-logo">XENON</a>
@@ -532,27 +614,55 @@
         </div>
     </nav>
 
-    <header id="hero" class="hero-section">
-        <div class="hero-content">
-            <h1>RAW. ELEVATED. INDUSTRIAL.</h1>
-            <p>Drop 04 // Out Now</p>
-            <a href="#products" class="btn-primary">Shop the Collection</a>
-        </div>
-    </header>
+    <!-- 3D Flip Hero Section Parent Container -->
+    <div id="hero" class="hero-perspective">
+        <div class="hero-flip-card" id="heroCard">
+            
+            <!-- FRONT SIDE: Commercial storefront view -->
+            <div class="hero-front">
+                <div class="hero-content">
+                    <h1>RAW. ELEVATED. INDUSTRIAL.</h1>
+                    <p>Drop 04 // Out Now</p>
+                    <div class="hero-btn-group">
+                        <a href="#products" class="btn-primary">Shop Drops</a>
+                        <button class="btn-secondary" id="flipToBack">Our Story</button>
+                    </div>
+                </div>
+            </div>
 
+            <!-- BACK SIDE: Underground Brand Narrative -->
+            <div class="hero-back">
+                <div class="hero-content story-wrapper">
+                    <h2>THE ARCHITECTURE OF XENON</h2>
+                    <p>
+                        Established as an independent creative outlet, XENON merges raw subcultural architecture with functional industrial apparel. Every garment is an exploration of oversized proportions, heavy raw textiles, and muted, brutalist tones. We don't build collections for trends; we build hardware for the body to survive the modern landscape.
+                    </p>
+                    <div class="hero-btn-group">
+                        <button class="btn-primary" id="flipToFront">Back to Shop</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Featured Products Section -->
     <main id="products" class="products-section">
         <h2 class="section-title">FEATURED DROPS</h2>
         <div class="product-grid" id="product-grid">
-            </div>
+            <!-- Dynamically loaded via Javascript -->
+        </div>
     </main>
 
+    <!-- Shopping Cart Slide-out Drawer -->
     <div id="cart-drawer" class="cart-drawer">
         <div class="cart-header">
             <h3>YOUR BAG</h3>
             <button id="cart-close" class="close-btn">&times;</button>
         </div>
         <div id="cart-items" class="cart-items-container">
-            </div>
+            <!-- Dynamically updated via Javascript -->
+        </div>
         <div class="cart-footer">
             <div class="cart-total">
                 <span>Total:</span>
@@ -563,6 +673,7 @@
     </div>
     <div id="cart-overlay" class="cart-overlay"></div>
 
+    <!-- Contact & Connect Section -->
     <section id="contact" class="contact-section">
         <div class="contact-container">
             <h2>JOIN THE UNDERGROUND</h2>
@@ -581,12 +692,14 @@
         </div>
     </section>
 
+    <!-- Footer -->
     <footer class="footer">
         <p>&copy; 2026 XENON STUDIO. ALL RIGHTS RESERVED.</p>
     </footer>
 
+    <!-- JavaScript Functional Architecture -->
     <script>
-        // --- Expanded Inventory Database (Streetwear Core Lineup) ---
+        // --- Expanded Inventory Database ---
         const products = [
             {
                 id: 1,
@@ -650,7 +763,7 @@
             }
         ];
 
-        // --- Persistent Storage State Manager ---
+        // --- State Management ---
         let cart = JSON.parse(localStorage.getItem('xenon_cart')) || [];
 
         // --- Cache DOM Elements ---
@@ -664,6 +777,11 @@
         const cartCount = document.getElementById('cart-count');
         const mobileMenuBtn = document.getElementById('mobile-menu');
         const navMenu = document.querySelector('.nav-menu');
+        
+        // Hero Flip Elements
+        const heroCard = document.getElementById('heroCard');
+        const flipToBackBtn = document.getElementById('flipToBack');
+        const flipToFrontBtn = document.getElementById('flipToFront');
 
         // --- Core Application Methods ---
 
@@ -702,7 +820,6 @@
             }
 
             updateCart();
-            // Fluid user interaction: Open drawer natively when an item lands in basket
             cartDrawer.classList.add('active');
             cartOverlay.classList.add('active');
         }
@@ -766,6 +883,15 @@
         cartClose.addEventListener('click', toggleCart);
         cartOverlay.addEventListener('click', toggleCart);
         mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+
+        // Hero 3D Card Flipping Event Listeners
+        flipToBackBtn.addEventListener('click', () => {
+            heroCard.classList.add('flipped');
+        });
+
+        flipToFrontBtn.addEventListener('click', () => {
+            heroCard.classList.remove('flipped');
+        });
 
         // Run application on configuration load complete
         document.addEventListener('DOMContentLoaded', () => {
