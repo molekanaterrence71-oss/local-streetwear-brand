@@ -1,161 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XENON // Streetwear Store</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        /* --- Root Variables & Reset --- */
-        :root {
-            --bg-black: #0a0a0a;
-            --card-black: #121212;
-            --text-white: #ffffff;
-            --silver: #b3b3b3;
-            --chrome-silver: #e5e5e5;
-            --border-color: #262626;
-            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XENON // Streetwear Store</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- Root Variables & Reset --- */
+        :root {
+            --bg-black: #0a0a0a;
+            --card-black: #121212;
+            --text-white: #ffffff;
+            --silver: #b3b3b3;
+            --chrome-silver: #e5e5e5;
+            --border-color: #262626;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        body { font-family: var(--font-main); background-color: var(--bg-black); color: var(--text-white); overflow-x: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { font-family: var(--font-main); background-color: var(--bg-black); color: var(--text-white); overflow-x: hidden; }
 
-        /* --- Navigation --- */
-        .navbar { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background-color: rgba(10, 10, 10, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); }
-        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1300px; margin: 0 auto; padding: 1.5rem 2rem; }
-        .nav-logo { font-size: 1.8rem; font-weight: 900; letter-spacing: 4px; color: var(--text-white); text-decoration: none; }
-        .nav-menu { display: flex; list-style: none; gap: 2.5rem; }
-        .nav-link { color: var(--silver); text-decoration: none; font-size: 0.9rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s ease; }
-        .nav-link:hover { color: var(--text-white); }
-        .nav-icons { display: flex; align-items: center; gap: 1.5rem; }
-        .cart-btn { background: none; border: none; color: var(--text-white); font-size: 1.3rem; cursor: pointer; position: relative; }
-        #cart-count { position: absolute; top: -8px; right: -10px; background-color: var(--text-white); color: var(--bg-black); font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 50%; }
+        /* --- Navigation --- */
+        .navbar { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background-color: rgba(10, 10, 10, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1300px; margin: 0 auto; padding: 1.5rem 2rem; }
+        .nav-logo { font-size: 1.8rem; font-weight: 900; letter-spacing: 4px; color: var(--text-white); text-decoration: none; }
+        .nav-menu { display: flex; list-style: none; gap: 2.5rem; }
+        .nav-link { color: var(--silver); text-decoration: none; font-size: 0.9rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s ease; }
+        .nav-link:hover { color: var(--text-white); }
+        .nav-icons { display: flex; align-items: center; gap: 1.5rem; }
+        .cart-btn { background: none; border: none; color: var(--text-white); font-size: 1.3rem; cursor: pointer; position: relative; }
+        #cart-count { position: absolute; top: -8px; right: -10px; background-color: var(--text-white); color: var(--bg-black); font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 50%; }
 
-        /* --- Hero Section & Transition --- */
-        .hero-container { width: 100%; height: 100vh; position: relative; overflow: hidden; }
-        .hero-screen { position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 1.5rem; transition: opacity 0.5s ease-in-out; }
-        .hero-screen.hidden { opacity: 0; pointer-events: none; z-index: 0; }
-        .hero-screen.active { opacity: 1; z-index: 1; }
-        .hero-front { background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1509281373149-e957c6296406?q=80&w=1920') no-repeat center center/cover; }
-        .hero-back { background: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.95)), url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1920') no-repeat center center/cover; }
-        
-        .hero-content h1 { font-size: 3.5rem; font-weight: 900; letter-spacing: 6px; margin-bottom: 1rem; }
-        .hero-content p { font-size: 1.2rem; color: var(--silver); letter-spacing: 4px; margin-bottom: 2.5rem; text-transform: uppercase; }
-        .story-wrapper { max-width: 700px; }
-        .story-wrapper h2 { font-size: 2.5rem; letter-spacing: 4px; margin-bottom: 1.5rem; font-weight: 900; }
-        .story-wrapper p { font-size: 1.05rem; line-height: 1.8; color: var(--chrome-silver); margin-bottom: 2.5rem; }
-        .hero-btn-group { display: flex; justify-content: center; gap: 1.5rem; }
-        .btn-primary, .btn-secondary { padding: 1rem 2rem; border: 1px solid var(--text-white); color: var(--text-white); text-decoration: none; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; background: transparent; cursor: pointer; transition: 0.3s; }
-        .btn-primary:hover { background-color: var(--text-white); color: var(--bg-black); }
+        /* --- Hero Section & Transition --- */
+        .hero-container { width: 100%; height: 100vh; position: relative; overflow: hidden; }
+        .hero-screen { position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 1.5rem; transition: opacity 0.5s ease-in-out; }
+        .hero-screen.hidden { opacity: 0; pointer-events: none; z-index: 0; }
+        .hero-screen.active { opacity: 1; z-index: 1; }
+        .hero-front { background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1509281373149-e957c6296406?q=80&w=1920') no-repeat center center/cover; }
+        .hero-back { background: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.95)), url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1920') no-repeat center center/cover; }
+        
+        .hero-content h1 { font-size: 3.5rem; font-weight: 900; letter-spacing: 6px; margin-bottom: 1rem; }
+        .hero-content p { font-size: 1.2rem; color: var(--silver); letter-spacing: 4px; margin-bottom: 2.5rem; text-transform: uppercase; }
+        .story-wrapper { max-width: 700px; }
+        .story-wrapper h2 { font-size: 2.5rem; letter-spacing: 4px; margin-bottom: 1.5rem; font-weight: 900; }
+        .story-wrapper p { font-size: 1.05rem; line-height: 1.8; color: var(--chrome-silver); margin-bottom: 2.5rem; }
+        .hero-btn-group { display: flex; justify-content: center; gap: 1.5rem; }
+        .btn-primary, .btn-secondary { padding: 1rem 2rem; border: 1px solid var(--text-white); color: var(--text-white); text-decoration: none; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; background: transparent; cursor: pointer; transition: 0.3s; }
+        .btn-primary:hover { background-color: var(--text-white); color: var(--bg-black); }
 
-        /* --- Hex Matrix Overlay --- */
-        .hex-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; display: grid; grid-template-columns: repeat(24, 1fr); grid-template-rows: repeat(12, 1fr); overflow: hidden; }
-        .hex-cell { opacity: 0; transform: scale(0.0) rotate(-60deg); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease; background-color: #000000; }
-        .hex-container.animate .hex-cell { opacity: 1; transform: scale(1.25) rotate(0deg); }
+        /* --- Hex Matrix Overlay --- */
+        .hex-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; display: grid; grid-template-columns: repeat(24, 1fr); grid-template-rows: repeat(12, 1fr); overflow: hidden; }
+        .hex-cell { opacity: 0; transform: scale(0.0) rotate(-60deg); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease; background-color: #000000; }
+        .hex-container.animate .hex-cell { opacity: 1; transform: scale(1.25) rotate(0deg); }
 
-        /* --- Products & Utility Styles --- */
-        .products-section { max-width: 1300px; margin: 6rem auto; padding: 0 2rem; }
-        .section-title { font-size: 2rem; letter-spacing: 4px; margin-bottom: 3rem; text-align: center; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem; }
-        .product-card { background-color: var(--card-black); border: 1px solid var(--border-color); }
-        .btn-add-cart { width: 100%; padding: 0.8rem; background: transparent; border: 1px solid var(--border-color); color: var(--text-white); cursor: pointer; }
-        .cart-drawer { position: fixed; top: 0; right: -400px; width: 400px; height: 100%; background-color: var(--bg-black); border-left: 1px solid var(--border-color); z-index: 1002; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .cart-drawer.active { right: 0; }
-        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 1001; display: none; }
-        .cart-overlay.active { display: block; }
-    </style>
+        /* --- Products & Utility Styles --- */
+        .products-section { max-width: 1300px; margin: 6rem auto; padding: 0 2rem; }
+        .section-title { font-size: 2rem; letter-spacing: 4px; margin-bottom: 3rem; text-align: center; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem; }
+        .product-card { background-color: var(--card-black); border: 1px solid var(--border-color); }
+        .btn-add-cart { width: 100%; padding: 0.8rem; background: transparent; border: 1px solid var(--border-color); color: var(--text-white); cursor: pointer; }
+        .cart-drawer { position: fixed; top: 0; right: -400px; width: 400px; height: 100%; background-color: var(--bg-black); border-left: 1px solid var(--border-color); z-index: 1002; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .cart-drawer.active { right: 0; }
+        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 1001; display: none; }
+        .cart-overlay.active { display: block; }
+    </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#" class="nav-logo">XENON</a>
-            <ul class="nav-menu">
-                <li><a href="#hero" class="nav-link">Home</a></li>
-                <li><a href="#products" class="nav-link">Shop</a></li>
-            </ul>
-            <div class="nav-icons">
-                <button id="cart-toggle" class="cart-btn"><i class="fa-solid fa-bag-shopping"></i><span id="cart-count">0</span></button>
-            </div>
-        </div>
-    </nav>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">XENON</a>
+            <ul class="nav-menu">
+                <li><a href="#hero" class="nav-link">Home</a></li>
+                <li><a href="#products" class="nav-link">Shop</a></li>
+            </ul>
+            <div class="nav-icons">
+                <button id="cart-toggle" class="cart-btn"><i class="fa-solid fa-bag-shopping"></i><span id="cart-count">0</span></button>
+            </div>
+        </div>
+    </nav>
 
-    <div id="hero" class="hero-container">
-        <div class="hex-container" id="hexContainer"></div>
+    <div id="hero" class="hero-container">
+        <div class="hex-container" id="hexContainer"></div>
 
-        <div id="screen-front" class="hero-screen hero-front active">
-            <div class="hero-content">
-                <h1>RAW. ELEVATED. INDUSTRIAL.</h1>
-                <p>Drop 04 // Out Now</p>
-                <div class="hero-btn-group">
-                    <a href="#products" class="btn-primary">Shop Drops</a>
-                    <button class="btn-secondary" id="showStory">Our Story</button>
-                </div>
-            </div>
-        </div>
+        <div id="screen-front" class="hero-screen hero-front active">
+            <div class="hero-content">
+                <h1>RAW. ELEVATED. INDUSTRIAL.</h1>
+                <p>Drop 04 // Out Now</p>
+                <div class="hero-btn-group">
+                    <a href="#products" class="btn-primary">Shop Drops</a>
+                    <button class="btn-secondary" id="showStory">Our Story</button>
+                </div>
+            </div>
+        </div>
 
-        <div id="screen-back" class="hero-screen hero-back hidden">
-            <div class="hero-content story-wrapper">
-                <h2>THE ARCHITECTURE OF XENON</h2>
-                <p>Established as an independent creative outlet, XENON merges raw subcultural architecture with functional industrial apparel. We don't build collections for trends; we build hardware for the body to survive the modern landscape.</p>
-                <button class="btn-primary" id="showHome">Back to Shop</button>
-            </div>
-        </div>
-    </div>
+        <div id="screen-back" class="hero-screen hero-back hidden">
+            <div class="hero-content story-wrapper">
+                <h2>THE ARCHITECTURE OF XENON</h2>
+                <p>Established as an independent creative outlet, XENON merges raw subcultural architecture with functional industrial apparel. We don't build collections for trends; we build hardware for the body to survive the modern landscape.</p>
+                <button class="btn-primary" id="showHome">Back to Shop</button>
+            </div>
+        </div>
+    </div>
 
-    <main id="products" class="products-section">
-        <h2 class="section-title">FEATURED DROPS</h2>
-        <div class="product-grid" id="product-grid"></div>
-    </main>
+    <main id="products" class="products-section">
+        <h2 class="section-title">FEATURED DROPS</h2>
+        <div class="product-grid" id="product-grid"></div>
+    </main>
 
-    <div id="cart-drawer" class="cart-drawer">
-        <div class="cart-header" style="padding:2rem;"><h3>YOUR BAG</h3></div>
-        <div id="cart-items" style="padding:2rem;"></div>
-    </div>
-    <div id="cart-overlay" class="cart-overlay"></div>
+    <div id="cart-drawer" class="cart-drawer">
+        <div class="cart-header" style="padding:2rem;"><h3>YOUR BAG</h3></div>
+        <div id="cart-items" style="padding:2rem;"></div>
+    </div>
+    <div id="cart-overlay" class="cart-overlay"></div>
 
-    <script>
-        const products = [
-            { id: 1, name: "OVERSIZED SEAM GRAPHIC HOODIE", price: 85.00, image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=600" },
-            { id: 2, name: "BOX FIT OVERSIZED T-SHIRT", price: 45.00, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=600" }
-        ];
+    <script>
+        const products = [
+            { id: 1, name: "OVERSIZED SEAM GRAPHIC HOODIE", price: 85.00, image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=600" },
+            { id: 2, name: "BOX FIT OVERSIZED T-SHIRT", price: 45.00, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=600" }
+        ];
 
-        const hexContainer = document.getElementById('hexContainer');
-        const screenFront = document.getElementById('screen-front');
-        const screenBack = document.getElementById('screen-back');
+        const hexContainer = document.getElementById('hexContainer');
+        const screenFront = document.getElementById('screen-front');
+        const screenBack = document.getElementById('screen-back');
 
-        // Build Hex Grid
-        for (let r = 0; r < 12; r++) {
-            for (let c = 0; c < 24; c++) {
-                const cell = document.createElement('div');
-                cell.classList.add('hex-cell');
-                cell.style.transitionDelay = `${(r + c) * 0.03}s`;
-                hexContainer.appendChild(cell);
-            }
-        }
+        // Build Hex Grid
+        for (let r = 0; r < 12; r++) {
+            for (let c = 0; c < 24; c++) {
+                const cell = document.createElement('div');
+                cell.classList.add('hex-cell');
+                cell.style.transitionDelay = `${(r + c) * 0.03}s`;
+                hexContainer.appendChild(cell);
+            }
+        }
 
-        function switchHeroSection(toStory) {
-            hexContainer.classList.add('animate');
-            setTimeout(() => {
-                if (toStory) {
-                    screenFront.classList.replace('active', 'hidden');
-                    screenBack.classList.replace('hidden', 'active');
-                } else {
-                    screenBack.classList.replace('active', 'hidden');
-                    screenFront.classList.replace('hidden', 'active');
-                }
-            }, 1000);
-            setTimeout(() => hexContainer.classList.remove('animate'), 2000);
-        }
+        function switchHeroSection(toStory) {
+            hexContainer.classList.add('animate');
+            setTimeout(() => {
+                if (toStory) {
+                    screenFront.classList.replace('active', 'hidden');
+                    screenBack.classList.replace('hidden', 'active');
+                } else {
+                    screenBack.classList.replace('active', 'hidden');
+                    screenFront.classList.replace('hidden', 'active');
+                }
+            }, 1000);
+            setTimeout(() => hexContainer.classList.remove('animate'), 2000);
+        }
 
-        document.getElementById('showStory').addEventListener('click', () => switchHeroSection(true));
-        document.getElementById('showHome').addEventListener('click', () => switchHeroSection(false));
-        document.getElementById('cart-toggle').addEventListener('click', () => {
-            document.getElementById('cart-drawer').classList.toggle('active');
-            document.getElementById('cart-overlay').classList.toggle('active');
-        });
-    </script>
+        document.getElementById('showStory').addEventListener('click', () => switchHeroSection(true));
+        document.getElementById('showHome').addEventListener('click', () => switchHeroSection(false));
+        document.getElementById('cart-toggle').addEventListener('click', () => {
+            document.getElementById('cart-drawer').classList.toggle('active');
+            document.getElementById('cart-overlay').classList.toggle('active');
+        });
+    </script>
 </body>
 </html>
