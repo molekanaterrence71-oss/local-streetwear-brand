@@ -136,9 +136,9 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            /* Snappy 0.8s flip optimized to execute entirely behind the solid black grid */
-            transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1), 
-                        opacity 0.3s ease-in-out;
+            /* Slowed transform to 1.5s so it flips majestically in the background */
+            transition: transform 1.5s cubic-bezier(0.76, 0, 0.24, 1), 
+                        opacity 0.4s ease-in-out;
         }
 
         .hero-flip-card.flipped {
@@ -265,8 +265,9 @@
             opacity: 0;
             transform: scale(0.0) rotate(-60deg);
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
-                        opacity 0.6s ease;
+            /* Made cell scaling slightly slower for a weightier travel animation */
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                        opacity 0.8s ease;
             background-color: #000000;
         }
 
@@ -762,43 +763,42 @@
                 const cell = document.createElement('div');
                 cell.classList.add('hex-cell');
                 
-                // Diagonal pattern logic (row index + column index)
+                // Increased the delay factor to 0.07s to stretch wave roll-out time
                 const diagonalIndex = r + c; 
-                cell.style.transitionDelay = `${diagonalIndex * 0.04}s`;
+                cell.style.transitionDelay = `${diagonalIndex * 0.07}s`;
                 
                 hexContainer.appendChild(cell);
             }
         }
 
-        // --- Calibrated Transition Timeline ---
+        // --- Calibrated 5-Second Transition Timeline ---
         function executeHexFlipTransition(targetAction) {
-            // 1. Roll the black hexagons across the active layout
+            // 1. Roll out the black hexagon screen wave
             hexContainer.classList.add('animate');
 
-            // 2. Smoothly fade out content just as hexagons reach maximum density
-            // This prevents 3D clipping from tearing through grid structures
+            // 2. Fade out original card layout smoothly before 3D movement begins
             setTimeout(() => {
                 heroCard.classList.add('hide-during-flip');
-            }, 1500);
+            }, 1200);
 
-            // 3. Flip the card physically while hidden behind 100% solid black shield mass
+            // 3. Perform majestic 1.5s 3D background flip in complete hidden darkness
             setTimeout(() => {
                 if (targetAction === 'flipBack') {
                     heroCard.classList.add('flipped');
                 } else if (targetAction === 'flipFront') {
                     heroCard.classList.remove('flipped');
                 }
-            }, 1900); 
+            }, 2000); 
 
-            // 4. Start clearing the matrix down the screen
+            // 4. Retract the matrix wall (extended hold ensures full rotation completion)
             setTimeout(() => {
                 hexContainer.classList.remove('animate');
-            }, 2900);
+            }, 4200);
 
-            // 5. Fade the newly flipped layout back up cleanly as the grid clears out
+            // 5. Pop the new card contents smoothly back into view as hexagons clear away
             setTimeout(() => {
                 heroCard.classList.remove('hide-during-flip');
-            }, 3300);
+            }, 5000);
         }
 
         // --- E-Commerce Operations ---
