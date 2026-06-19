@@ -136,7 +136,8 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+            /* Lengthened flip timing slightly to pair beautifully with a slower grid wipe */
+            transition: transform 1.2s cubic-bezier(0.76, 0, 0.24, 1);
         }
 
         .hero-flip-card.flipped {
@@ -155,13 +156,11 @@
             padding: 0 1.5rem;
         }
 
-        /* Front Face (Original Hero) */
         .hero-front {
             background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), 
                         url('https://images.unsplash.com/photo-1509281373149-e957c6296406?q=80&w=1920') no-repeat center center/cover;
         }
 
-        /* Back Face (Brand Story) */
         .hero-back {
             background: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.95)), 
                         url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1920') no-repeat center center/cover;
@@ -205,7 +204,6 @@
             margin-bottom: 2.5rem;
         }
 
-        /* Buttons Setup */
         .hero-btn-group {
             display: flex;
             justify-content: center;
@@ -243,7 +241,7 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        /* --- Hexagonal Screen Transition Overlay --- */
+        /* --- Slower Left-To-Right Stark Stark B&W Hex Matrix Overlay --- */
         .hex-container {
             position: absolute;
             top: 0;
@@ -253,26 +251,36 @@
             z-index: 10;
             pointer-events: none;
             display: grid;
-            /* Creates grid items matching the screen dimensions */
-            grid-template-columns: repeat(10, 1fr);
+            grid-template-columns: repeat(12, 1fr); /* Slightly denser matrix layout grid columns */
             grid-template-rows: repeat(6, 1fr);
             overflow: hidden;
         }
 
         .hex-cell {
-            background-color: #1a1a1a;
-            border: 1px solid #333;
             opacity: 0;
-            transform: scale(0.1);
-            /* Perfect CSS Clip-Path Hexagon geometry */
+            transform: scale(0.0) rotate(-45deg);
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            transition: transform 0.4s ease, opacity 0.4s ease;
+            /* Transition parameters optimized for a heavy, slow, sliding wipe effect */
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), 
+                        opacity 0.7s ease, 
+                        background-color 0.4s ease;
         }
 
-        /* Activating animation configuration states */
+        /* Alternate cell coloring scheme between pure industrial stark white and deep onyx black */
+        .hex-cell:nth-child(odd) {
+            background-color: #ffffff;
+            border: 1px solid #e5e5e5;
+        }
+
+        .hex-cell:nth-child(even) {
+            background-color: #000000;
+            border: 1px solid #1a1a1a;
+        }
+
+        /* Activating animation configuration grid layout classes */
         .hex-container.animate .hex-cell {
-            opacity: 0.95;
-            transform: scale(1.1);
+            opacity: 1;
+            transform: scale(1.15) rotate(0deg);
         }
 
         /* --- Products Section --- */
@@ -603,13 +611,8 @@
             .menu-toggle.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
             .menu-toggle.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-            .hero-content h1 {
-                font-size: 2.2rem;
-            }
-            
-            .story-wrapper h2 {
-                font-size: 1.8rem;
-            }
+            .hero-content h1 { font-size: 2.2rem; }
+            .story-wrapper h2 { font-size: 1.8rem; }
 
             .cart-drawer {
                 width: 100%;
@@ -617,7 +620,7 @@
             }
             
             .hex-container {
-                grid-template-columns: repeat(6, 1fr);
+                grid-template-columns: repeat(6, 1fr); /* Adapt spatial matrix for smaller mobile viewports */
                 grid-template-rows: repeat(10, 1fr);
             }
         }
@@ -754,46 +757,54 @@
         const mobileMenuBtn = document.getElementById('mobile-menu');
         const navMenu = document.querySelector('.nav-menu');
         
-        // Hero Elements
+        // Hero Card & Dynamic Hex Matrix Properties
         const heroCard = document.getElementById('heroCard');
         const flipToBackBtn = document.getElementById('flipToBack');
         const flipToFrontBtn = document.getElementById('flipToFront');
         const hexContainer = document.getElementById('hexContainer');
 
-        // --- Setup Hexagonal Matrix Grid Items ---
-        const totalHexagons = 60; // 10 columns x 6 rows configured in layout
-        for (let i = 0; i < totalHexagons; i++) {
-            const cell = document.createElement('div');
-            cell.classList.add('hex-cell');
-            
-            // Apply randomized mathematical staggering delays to simulate an unstable fading wave
-            const staggeredDelay = Math.random() * 0.4; 
-            cell.style.transitionDelay = `${staggeredDelay}s`;
-            
-            hexContainer.appendChild(cell);
+        // Define matrix structural boundaries
+        const cols = 12;
+        const rows = 6;
+        const totalHexagons = cols * rows;
+
+        // Generate matrix array positions 
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const cell = document.createElement('div');
+                cell.classList.add('hex-cell');
+                
+                // Left-To-Right Directional Processing Engine:
+                // Delay maps directly onto column position variable index (c)
+                const baseDelay = c * 0.12; 
+                cell.style.transitionDelay = `${baseDelay}s`;
+                
+                hexContainer.appendChild(cell);
+            }
         }
 
-        // --- Hexagonal Transition Orchestration ---
+        // --- Hexagonal Left-To-Right Transition Orchestrator ---
         function executeHexFlipTransition(targetAction) {
-            // Step 1: Fade and scale hexagons into view across grid architecture
             hexContainer.classList.add('animate');
 
-            // Step 2: Midpoint calculation. Flip the structural elements while screens are occluded
+            // Midpoint card inversion schedule calculation matching column limits
+            // Maximum calculated column entry point delay path calculation is (11 columns * 0.12s) = 1.32 seconds.
+            // 0.85s represents the structural sweet spot for global coverage inversion
             setTimeout(() => {
                 if (targetAction === 'flipBack') {
                     heroCard.classList.add('flipped');
                 } else if (targetAction === 'flipFront') {
                     heroCard.classList.remove('flipped');
                 }
-            }, 450);
+            }, 850);
 
-            // Step 3: De-escalate and dissolve grid positions cleanly
+            // Strip animations to smoothly reveal target layout faces once full wipe cycle ends
             setTimeout(() => {
                 hexContainer.classList.remove('animate');
-            }, 900);
+            }, 2100);
         }
 
-        // --- Core Application Methods ---
+        // --- Core E-Commerce Methods ---
 
         function renderProducts() {
             if (!productGrid) return;
@@ -880,13 +891,12 @@
             });
         });
 
-        // --- Runtime Attachments ---
+        // --- Runtime Event Framework ---
         cartToggle.addEventListener('click', toggleCart);
         cartClose.addEventListener('click', toggleCart);
         cartOverlay.addEventListener('click', toggleCart);
         mobileMenuBtn.addEventListener('click', toggleMobileMenu);
 
-        // Intercept standard flip behaviors to fire custom Hex dynamic workflow
         flipToBackBtn.addEventListener('click', () => executeHexFlipTransition('flipBack'));
         flipToFrontBtn.addEventListener('click', () => executeHexFlipTransition('flipFront'));
 
