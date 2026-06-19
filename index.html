@@ -59,8 +59,11 @@
         .products-section { max-width: 1300px; margin: 6rem auto; padding: 0 2rem; }
         .section-title { font-size: 2rem; letter-spacing: 4px; margin-bottom: 3rem; text-align: center; }
         .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem; }
-        .product-card { background-color: var(--card-black); border: 1px solid var(--border-color); }
-        .btn-add-cart { width: 100%; padding: 0.8rem; background: transparent; border: 1px solid var(--border-color); color: var(--text-white); cursor: pointer; }
+        .product-card { background-color: var(--card-black); border: 1px solid var(--border-color); padding: 1rem; text-align: center; }
+        .product-card img { width: 100%; height: 300px; object-fit: cover; margin-bottom: 1rem; }
+        .product-card h3 { margin-bottom: 0.5rem; font-size: 1rem; }
+        .btn-add-cart { width: 100%; padding: 0.8rem; margin-top: 1rem; background: transparent; border: 1px solid var(--border-color); color: var(--text-white); cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-add-cart:hover { background: var(--text-white); color: var(--bg-black); }
         .cart-drawer { position: fixed; top: 0; right: -400px; width: 400px; height: 100%; background-color: var(--bg-black); border-left: 1px solid var(--border-color); z-index: 1002; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .cart-drawer.active { right: 0; }
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 1001; display: none; }
@@ -119,14 +122,36 @@
     <script>
         const products = [
             { id: 1, name: "OVERSIZED SEAM GRAPHIC HOODIE", price: 85.00, image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=600" },
-            { id: 2, name: "BOX FIT OVERSIZED T-SHIRT", price: 45.00, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=600" }
+            { id: 2, name: "BOX FIT OVERSIZED T-SHIRT", price: 45.00, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=600" },
+            { id: 3, name: "INDUSTRIAL LOGO BEANIE", price: 30.00, image: "https://images.unsplash.com/photo-1576871337622-98d48d1152a5?q=80&w=600" },
+            { id: 4, name: "STRUCTURED SNAPBACK HAT", price: 35.00, image: "https://images.unsplash.com/photo-1533055645738-7f3299723a49?q=80&w=600" },
+            { id: 5, name: "TECHNICAL CARGO TRACKPANTS", price: 110.00, image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=600" },
+            { id: 6, name: "HEAVYWEIGHT CREWNECK SWEATER", price: 95.00, image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=600" },
+            { id: 7, name: "LAYERED LONG SLEEVE", price: 55.00, image: "https://images.unsplash.com/photo-1602810318386-e34d4067232e?q=80&w=600" },
+            { id: 8, name: "ARCHITECTURAL SHELL JACKET", price: 180.00, image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=600" },
+            { id: 9, name: "MODULAR RIBBED SOCKS", price: 20.00, image: "https://images.unsplash.com/photo-1586350977771-b3b1376e3ac4?q=80&w=600" }
         ];
 
+        const productGrid = document.getElementById('product-grid');
+        
+        // Render Products
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>$${product.price.toFixed(2)}</p>
+                <button class="btn-add-cart">Add to Bag</button>
+            `;
+            productGrid.appendChild(card);
+        });
+
+        // Hex Grid Setup
         const hexContainer = document.getElementById('hexContainer');
         const screenFront = document.getElementById('screen-front');
         const screenBack = document.getElementById('screen-back');
 
-        // Build Hex Grid
         for (let r = 0; r < 12; r++) {
             for (let c = 0; c < 24; c++) {
                 const cell = document.createElement('div');
