@@ -136,9 +136,9 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            /* Updated to include opacity transition for the disappearing effect */
-            transition: transform 1.2s cubic-bezier(0.76, 0, 0.24, 1), 
-                        opacity 0.4s ease-in-out;
+            /* Snappy 0.8s flip optimized to execute entirely behind the solid black grid */
+            transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1), 
+                        opacity 0.3s ease-in-out;
         }
 
         .hero-flip-card.flipped {
@@ -146,7 +146,6 @@
         }
 
         .hero-flip-card.hide-during-flip {
-            /* Smoothly drops opacity to absolute black during transition mass */
             opacity: 0;
         }
 
@@ -268,7 +267,7 @@
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
                         opacity 0.6s ease;
-            background-color: #000000; /* Forces pure tactical black hexagons */
+            background-color: #000000;
         }
 
         .hex-container.animate .hex-cell {
@@ -771,30 +770,35 @@
             }
         }
 
-        // --- Integrated Transition Logic ---
+        // --- Calibrated Transition Timeline ---
         function executeHexFlipTransition(targetAction) {
-            // 1. Instantly fade content out while triggering hex screen overlay
-            heroCard.classList.add('hide-during-flip');
+            // 1. Roll the black hexagons across the active layout
             hexContainer.classList.add('animate');
 
-            // 2. Perform the physical 3D rotation safely while invisible
+            // 2. Smoothly fade out content just as hexagons reach maximum density
+            // This prevents 3D clipping from tearing through grid structures
+            setTimeout(() => {
+                heroCard.classList.add('hide-during-flip');
+            }, 1500);
+
+            // 3. Flip the card physically while hidden behind 100% solid black shield mass
             setTimeout(() => {
                 if (targetAction === 'flipBack') {
                     heroCard.classList.add('flipped');
                 } else if (targetAction === 'flipFront') {
                     heroCard.classList.remove('flipped');
                 }
-            }, 1000); 
+            }, 1900); 
 
-            // 3. Clear hex grid layout structures
+            // 4. Start clearing the matrix down the screen
             setTimeout(() => {
                 hexContainer.classList.remove('animate');
-            }, 2200);
+            }, 2900);
 
-            // 4. Fade picture and text elements back into view dynamically
+            // 5. Fade the newly flipped layout back up cleanly as the grid clears out
             setTimeout(() => {
                 heroCard.classList.remove('hide-during-flip');
-            }, 2600);
+            }, 3300);
         }
 
         // --- E-Commerce Operations ---
