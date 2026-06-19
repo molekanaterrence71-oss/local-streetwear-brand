@@ -143,7 +143,6 @@
             transform: rotateY(180deg);
         }
 
-        /* JavaScript controls this to completely hide the flip sequence mid-wipe */
         .hero-flip-card.hide-during-flip {
             visibility: hidden !important;
         }
@@ -245,7 +244,7 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        /* --- Slower Left-To-Right Small Hex Matrix Overlay --- */
+        /* --- Updated Hex Matrix Overlay (Diagonal All-Black) --- */
         .hex-container {
             position: absolute;
             top: 0;
@@ -255,7 +254,7 @@
             z-index: 10;
             pointer-events: none;
             display: grid;
-            grid-template-columns: repeat(24, 1fr); /* Denser grid structure for smaller hexagons */
+            grid-template-columns: repeat(24, 1fr);
             grid-template-rows: repeat(12, 1fr);
             overflow: hidden;
         }
@@ -266,14 +265,6 @@
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
                         opacity 0.6s ease;
-        }
-
-        /* Alternating White and Black theme styling */
-        .hex-cell:nth-child(odd) {
-            background-color: #ffffff;
-        }
-
-        .hex-cell:nth-child(even) {
             background-color: #000000;
         }
 
@@ -636,9 +627,9 @@
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
             <div class="nav-icons">
-                <button id="cart-toggle" class="cart-btn">
+                <button id="cart-toggle" class="cart-btn" aria-label="Toggle Shopping Cart">
                     <i class="fa-solid fa-bag-shopping"></i>
-                    <span id="cart-count">0</span>
+                    <span id="cart-count" aria-live="polite">0</span>
                 </button>
                 <div class="menu-toggle" id="mobile-menu">
                     <span class="bar"></span>
@@ -684,7 +675,8 @@
     <main id="products" class="products-section">
         <h2 class="section-title">FEATURED DROPS</h2>
         <div class="product-grid" id="product-grid">
-            </div>
+            <!-- Products rendered here via JS -->
+        </div>
     </main>
 
     <div id="cart-drawer" class="cart-drawer">
@@ -693,7 +685,8 @@
             <button id="cart-close" class="close-btn">&times;</button>
         </div>
         <div id="cart-items" class="cart-items-container">
-            </div>
+            <!-- Cart items rendered here via JS -->
+        </div>
         <div class="cart-footer">
             <div class="cart-total">
                 <span>Total:</span>
@@ -743,6 +736,7 @@
 
         let cart = JSON.parse(localStorage.getItem('xenon_cart')) || [];
 
+        // DOM Elements
         const productGrid = document.getElementById('product-grid');
         const cartToggle = document.getElementById('cart-toggle');
         const cartClose = document.getElementById('cart-close');
@@ -753,13 +747,13 @@
         const cartCount = document.getElementById('cart-count');
         const mobileMenuBtn = document.getElementById('mobile-menu');
         const navMenu = document.querySelector('.nav-menu');
-        
+
         const heroCard = document.getElementById('heroCard');
         const flipToBackBtn = document.getElementById('flipToBack');
         const flipToFrontBtn = document.getElementById('flipToFront');
         const hexContainer = document.getElementById('hexContainer');
 
-        // Increased grid size parameters for smaller hexagons
+        // --- Diagonal Hex Matrix Instantiation ---
         const cols = 24;
         const rows = 12;
 
@@ -768,19 +762,18 @@
                 const cell = document.createElement('div');
                 cell.classList.add('hex-cell');
                 
-                // Fine-tuned sequential delay for small item structures moving left-to-right
-                const baseDelay = c * 0.06; 
-                cell.style.transitionDelay = `${baseDelay}s`;
+                // Diagonal delay calculation (row coordinate + column coordinate)
+                const diagonalIndex = r + c; 
+                cell.style.transitionDelay = `${diagonalIndex * 0.04}s`;
                 
                 hexContainer.appendChild(cell);
             }
         }
 
-        // --- Hidden Rotation & Left-To-Right Transition Orchestrator ---
         function executeHexFlipTransition(targetAction) {
             hexContainer.classList.add('animate');
 
-            // 1. Hide visual flip artifact generation exactly when the wipe achieves maximum coverage
+            // 1. Invert visibility right as the diagonal wipe reaches maximum screen mass
             setTimeout(() => {
                 heroCard.classList.add('hide-during-flip');
                 
@@ -789,21 +782,20 @@
                 } else if (targetAction === 'flipFront') {
                     heroCard.classList.remove('flipped');
                 }
-            }, 800);
+            }, 900);
 
-            // 2. Safely restore structural element visibility after inversion processing ends
+            // 2. Clear visibility hides
             setTimeout(() => {
                 heroCard.classList.remove('hide-during-flip');
-            }, 1200);
+            }, 1400);
 
-            // 3. Clear hexagonal layout animation statuses
+            // 3. Reset matrix layout status
             setTimeout(() => {
                 hexContainer.classList.remove('animate');
-            }, 2300);
+            }, 2500);
         }
 
-        // --- E-Commerce Functionality ---
-
+        // --- E-Commerce Operations ---
         function renderProducts() {
             if (!productGrid) return;
             productGrid.innerHTML = products.map(product => `
@@ -814,13 +806,17 @@
                     <div class="product-info">
                         <h3 class="product-name">${product.name}</h3>
                         <span class="product-price">$${product.price.toFixed(2)}</span>
-                        <button class="btn-add-cart" onclick="addToCart(${product.id})">ADD TO BAG</button>
+                        <button class="btn-add-cart" data-id="${product.id}">ADD TO BAG</button>
                     </div>
                 </div>
             `).join('');
         }
 
         function toggleCart() {
+            // Auto close mobile nav if cart is pulled open
+            mobileMenuBtn.classList.remove('active');
+            navMenu.classList.remove('active');
+
             cartDrawer.classList.toggle('active');
             cartOverlay.classList.toggle('active');
         }
@@ -870,11 +866,31 @@
                         <div class="cart-item-price">$${item.price.toFixed(2)}</div>
                         <div class="cart-item-qty">Qty: ${item.quantity}</div>
                     </div>
-                    <button class="remove-item" onclick="removeFromCart(${item.id})">
+                    <button class="remove-item" data-id="${item.id}">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>
             `).join('');
+        }
+
+        // --- Dynamic Event Listeners (Event Delegation) ---
+        if (productGrid) {
+            productGrid.addEventListener('click', (e) => {
+                if (e.target.classList.contains('btn-add-cart')) {
+                    const id = parseInt(e.target.getAttribute('data-id'), 10);
+                    addToCart(id);
+                }
+            });
+        }
+
+        if (cartItemsContainer) {
+            cartItemsContainer.addEventListener('click', (e) => {
+                const removeBtn = e.target.closest('.remove-item');
+                if (removeBtn) {
+                    const id = parseInt(removeBtn.getAttribute('data-id'), 10);
+                    removeFromCart(id);
+                }
+            });
         }
 
         function toggleMobileMenu() {
