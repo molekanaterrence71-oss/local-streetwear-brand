@@ -55,12 +55,39 @@
         .hex-cell { opacity: 0; transform: scale(0.0) rotate(-60deg); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease; background-color: #000000; }
         .hex-container.animate .hex-cell { opacity: 1; transform: scale(1.25) rotate(0deg); }
 
-        /* --- Products --- */
+        /* --- Products (Updated with Floating Effects) --- */
         .products-section { max-width: 1300px; margin: 6rem auto; padding: 0 2rem; }
         .section-title { font-size: 2rem; letter-spacing: 4px; margin-bottom: 3rem; text-align: center; }
         .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem; }
-        .product-card { background-color: var(--card-black); border: 1px solid var(--border-color); padding: 1rem; text-align: center; }
-        .product-card img { width: 100%; height: 300px; object-fit: cover; margin-bottom: 1rem; }
+        
+        .product-card { 
+            background-color: var(--card-black); 
+            border: 1px solid var(--border-color); 
+            padding: 1rem; 
+            text-align: center; 
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+            border-color: var(--silver);
+        }
+
+        @keyframes continuousFloat {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .product-card img { 
+            width: 100%; 
+            height: 300px; 
+            object-fit: cover; 
+            margin-bottom: 1rem; 
+            animation: continuousFloat 5s ease-in-out infinite;
+        }
+
         .btn-add-cart { width: 100%; padding: 0.8rem; margin-top: 1rem; background: transparent; border: 1px solid var(--border-color); color: var(--text-white); cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
         .btn-add-cart:hover { background: var(--text-white); color: var(--bg-black); }
 
